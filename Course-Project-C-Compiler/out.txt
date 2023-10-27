@@ -1,0 +1,199 @@
+
+PARSING COMPLETE
+
+
+
+
+								 PHASE 1: LEXICAL ANALYSIS 
+
+
+SYMBOL   DATATYPE   TYPE   LINE NUMBER 
+_______________________________________
+
+#include <stdio.h>		Header	0	
+#include <string.h>		Header	1	
+main	int	Function	3	
+a	int	Variable	5	
+x	int	Variable	6	
+1	CONST	Constant	6	
+y	int	Variable	7	
+2	CONST	Constant	7	
+z	int	Variable	8	
+3	CONST	Constant	8	
+10	CONST	Constant	10	
+5	CONST	Constant	11	
+if	N/A	Keyword		12	
+for	N/A	Keyword		14	
+k	int	Variable	14	
+0	CONST	Constant	14	
+printf	N/A	Keyword		17	
+else	N/A	Keyword		20	
+idx	int	Variable	22	
+i	int	Variable	24	
+scanf	N/A	Keyword		27	
+j	int	Variable	32	
+return	N/A	Keyword		37	
+
+
+								 PHASE 2: SYNTAX ANALYSIS 
+
+Parse Tree:
+            1
+        RETURN
+            return
+    main
+                                                                1
+                                                            =
+                                                                a
+                                                        for
+                                                                        ++
+                                                                    ITERATOR
+                                                                        j
+                                                                CONDITION
+                                                                        z
+                                                                    <
+                                                                        j
+                                                            CONDITION
+                                                                    0
+                                                                declaration
+                                                                    j
+                                                    statements
+                                                        if-else
+                                                                printf
+                                                            if
+                                                                    5
+                                                                >
+                                                                    x
+                                                statements
+                                                    scanf
+                                            statements
+                                                printf
+                                        for
+                                                        ++
+                                                    ITERATOR
+                                                        i
+                                                CONDITION
+                                                        10
+                                                    <
+                                                        i
+                                            CONDITION
+                                                    0
+                                                declaration
+                                                    i
+                                    statements
+                                                    1
+                                                declaration
+                                                    idx
+                                            else
+                                        if-else
+                                                        printf
+                                                    statements
+                                                                3
+                                                            +
+                                                                x
+                                                        =
+                                                            y
+                                                for
+                                                                ++
+                                                            ITERATOR
+                                                                k
+                                                        CONDITION
+                                                                10
+                                                            <
+                                                                k
+                                                    CONDITION
+                                                            0
+                                                        declaration
+                                                            k
+                                            if
+                                                    5
+                                                >
+                                                    x
+                                statements
+                                        5
+                                    =
+                                        z
+                            statements
+                                    10
+                                =
+                                    y
+                        statements
+                                3
+                            =
+                                x
+                    statements
+                            3
+                        declaration
+                            z
+                statements
+                        2
+                    declaration
+                        y
+            statements
+                    1
+                declaration
+                    x
+        statements
+                NULL
+            declaration
+                a
+program
+        #include <string.h>
+    headers
+        #include <stdio.h>
+
+
+
+
+								 PHASE 3: SEMANTIC ANALYSIS 
+
+Semantic analysis completed with no errors
+
+							   PHASE 4: INTERMEDIATE CODE GENERATION 
+
+a = NULL
+x = 1
+y = 2
+z = 3
+x = 3
+y = 10
+z = 5
+if (x > 5) GOTO L0 else GOTO L1
+
+LABEL L0:
+k = 0
+LABEL L2:
+if NOT (k < 10) GOTO L3
+t1 = x + 3
+y = t1
+t1 = k + 1
+k = t0
+LABEL L2:
+JUMP to L3
+
+LABEL L1:
+idx = 1
+GOTO next
+i = 0
+LABEL L4:
+if NOT (i < 10) GOTO L5
+if (x > 5) GOTO L6 else GOTO L7
+
+LABEL L6:
+
+LABEL L7:
+GOTO next
+j = 0
+LABEL L8:
+if NOT (j < z) GOTO L9
+a = 1
+t4 = j + 1
+j = t3
+LABEL L8:
+JUMP to L9
+t4 = j + 1
+j = t3
+LABEL L4:
+JUMP to L5
+
+

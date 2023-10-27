@@ -1,0 +1,9 @@
+In Terminal
+
+bison -dy .\compiler.y
+flex .\custom_compiler.l
+gcc .\y.tab.c
+
+In Git Bash
+
+./a.exe input.c > out.txt
