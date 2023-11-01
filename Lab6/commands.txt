@@ -1,0 +1,10 @@
+In this program can parse and evaluate arithmetic expressions according to operator 
+precedence and associativity and print the CFG of the given equation
+
+yacc -d parse.y
+
+flex parse.l
+
+gcc lex.yy.c y.tab.c
+
+./a.exe

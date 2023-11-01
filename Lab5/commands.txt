@@ -1,0 +1,9 @@
+Implementation of parse tree for given LALR(1) ( E -> E+E | E-E | E*E | E/E | -E | (E) | digit )
+
+yacc -d sol.y
+
+flex sol.l
+
+gcc lex.yy.c y.tab.c
+
+./a.exe

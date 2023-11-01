@@ -68,20 +68,67 @@
 /* Copy the first part of user declarations.  */
 
 /* Line 189 of yacc.c  */
-#line 1 "hex.y"
+#line 1 "sol.y"
 
+int yylex(void);
+void yyerror(char *s);
+int yywrap(void){
+	return 1;
+}
 #include <stdio.h>
-#include <stdlib.h>
+#include<stdlib.h>
+enum treetype {operator_node, number_node, variable_node};
+typedef struct tree {
+  enum treetype nodetype;
+   union {
+     struct {struct tree *left, *right; char operator;} an_operator;
+     int a_number;
+     char a_variable;
+   } body;
+} tree;
+static tree *make_operator (tree *l, char o, tree *r) {
+   tree *result= (tree*) malloc (sizeof(tree));
+   result->nodetype= operator_node;
+   result->body.an_operator.left= l;
+   result->body.an_operator.operator= o;
+   result->body.an_operator.right= r;
+   return result;
+}
 
-extern int yylex();
-extern void yyerror(const char *msg);
-
-int decimal;
-
+ static tree *make_number (int n) {
+   tree *result= (tree*) malloc (sizeof(tree));
+   result->nodetype= number_node;
+   result->body.a_number= n;
+   return result;
+}
+ static tree *make_variable (char v) {
+   tree *result= (tree*) malloc (sizeof(tree));
+   result->nodetype= variable_node;
+   result->body.a_variable= v;
+   return result;
+ }
+ static void printtree (tree *t, int level) {
+ #define step 4
+   if (t)
+     switch (t->nodetype)
+     {
+       case operator_node:
+        printtree (t->body.an_operator.right, level+step);
+        printf ("%*c%c\n", level, ' ', t->body.an_operator.operator);
+        printtree (t->body.an_operator.left, level+step);
+        break;
+       case number_node:
+        printf ("%*c%d\n", level, ' ', t->body.a_number);
+        break;
+       case variable_node:
+        printf ("%*c%c\n", level, ' ', t->body.a_variable);
+     }
+ }
+ 
 
 
 /* Line 189 of yacc.c  */
-#line 85 "hex.tab.c"
+#line 132 "y.tab.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -108,14 +155,33 @@ int decimal;
    /* Put the tokens into the symbol table, so that GDB and other debuggers
       know about them.  */
    enum yytokentype {
-     DIGIT = 258
+     number = 258,
+     variable = 259
    };
 #endif
+/* Tokens.  */
+#define number 258
+#define variable 259
+
 
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+typedef union YYSTYPE
+{
+
+/* Line 214 of yacc.c  */
+#line 58 "sol.y"
+
+   int a_number;
+   char a_variable;
+   struct tree *a_tree;
+
+
+
+/* Line 214 of yacc.c  */
+#line 184 "y.tab.c"
+} YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -126,7 +192,7 @@ typedef int YYSTYPE;
 
 
 /* Line 264 of yacc.c  */
-#line 130 "hex.tab.c"
+#line 196 "y.tab.c"
 
 #ifdef short
 # undef short
@@ -339,18 +405,18 @@ union yyalloc
 #endif
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  6
+#define YYFINAL  4
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   4
+#define YYLAST   15
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  6
+#define YYNTOKENS  11
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  3
+#define YYNNTS  4
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  4
+#define YYNRULES  8
 /* YYNRULES -- Number of states.  */
-#define YYNSTATES  8
+#define YYNSTATES  17
 
 /* YYTRANSLATE(YYLEX) -- Bison symbol number corresponding to YYLEX.  */
 #define YYUNDEFTOK  2
@@ -363,7 +429,12 @@ union yyalloc
 static const yytype_uint8 yytranslate[] =
 {
        0,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       4,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       9,    10,     5,     3,     2,     4,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     8,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -382,12 +453,7 @@ static const yytype_uint8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     1,     2,     3,     5
+       2,     2,     2,     2,     2,     2,     1,     2,     6,     7
 };
 
 #if YYDEBUG
@@ -395,20 +461,21 @@ static const yytype_uint8 yytranslate[] =
    YYRHS.  */
 static const yytype_uint8 yyprhs[] =
 {
-       0,     0,     3,     6,     9
+       0,     0,     3,     7,    11,    15,    19,    21,    25
 };
 
 /* YYRHS -- A `-1'-separated list of the rules' RHS.  */
 static const yytype_int8 yyrhs[] =
 {
-       7,     0,    -1,     8,     4,    -1,     5,     4,    -1,     3,
-      -1
+      12,     0,    -1,     7,     8,    13,    -1,    13,     5,    14,
+      -1,    13,     3,    14,    -1,    13,     4,    14,    -1,    14,
+      -1,     9,    13,    10,    -1,     7,    -1
 };
 
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    16,    16,    17,    20
+       0,    71,    71,    74,    75,    76,    77,    80,    81
 };
 #endif
 
@@ -417,8 +484,8 @@ static const yytype_uint8 yyrline[] =
    First, the terminals, then, starting at YYNTOKENS, nonterminals.  */
 static const char *const yytname[] =
 {
-  "$end", "error", "$undefined", "DIGIT", "'\\n'", "\"exit\"", "$accept",
-  "input", "expression", 0
+  "$end", "error", "$undefined", "'+'", "'-'", "'*'", "number",
+  "variable", "'='", "'('", "')'", "$accept", "stmt", "exp", "term", 0
 };
 #endif
 
@@ -427,20 +494,21 @@ static const char *const yytname[] =
    token YYLEX-NUM.  */
 static const yytype_uint16 yytoknum[] =
 {
-       0,   256,   257,   258,    10,   259
+       0,   256,   257,    43,    45,    42,   258,   259,    61,    40,
+      41
 };
 # endif
 
 /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
-       0,     6,     7,     7,     8
+       0,    11,    12,    13,    13,    13,    13,    14,    14
 };
 
 /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
 static const yytype_uint8 yyr2[] =
 {
-       0,     2,     2,     2,     1
+       0,     2,     3,     3,     3,     3,     1,     3,     1
 };
 
 /* YYDEFACT[STATE-NAME] -- Default rule to reduce with in state
@@ -448,13 +516,14 @@ static const yytype_uint8 yyr2[] =
    means the default is an error.  */
 static const yytype_uint8 yydefact[] =
 {
-       0,     4,     0,     0,     0,     3,     1,     2
+       0,     0,     0,     0,     1,     8,     0,     2,     6,     0,
+       0,     0,     0,     7,     4,     5,     3
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     3,     4
+      -1,     2,     7,     8
 };
 
 /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
@@ -462,13 +531,14 @@ static const yytype_int8 yydefgoto[] =
 #define YYPACT_NINF -4
 static const yytype_int8 yypact[] =
 {
-      -3,    -4,    -1,     1,     0,    -4,    -4,    -4
+      -1,     6,    12,     4,    -4,    -4,     4,     0,    -4,    -3,
+       4,     4,     4,    -4,    -4,    -4,    -4
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-      -4,    -4,    -4
+      -4,    -4,     9,    -2
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
@@ -478,19 +548,22 @@ static const yytype_int8 yypgoto[] =
 #define YYTABLE_NINF -1
 static const yytype_uint8 yytable[] =
 {
-       1,     6,     2,     5,     7
+      10,    11,    12,    10,    11,    12,     1,    13,    14,    15,
+      16,     5,     4,     6,     3,     9
 };
 
 static const yytype_uint8 yycheck[] =
 {
-       3,     0,     5,     4,     4
+       3,     4,     5,     3,     4,     5,     7,    10,    10,    11,
+      12,     7,     0,     9,     8,     6
 };
 
 /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
    symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-       0,     3,     5,     7,     8,     4,     0,     4
+       0,     7,    12,     8,     0,     7,     9,    13,    14,    13,
+       3,     4,     5,    10,    14,    14,    14
 };
 
 #define yyerrok		(yyerrstatus = 0)
@@ -1304,31 +1377,56 @@ yyreduce:
         case 2:
 
 /* Line 1455 of yacc.c  */
-#line 16 "hex.y"
-    { ;}
+#line 71 "sol.y"
+    {(yyval.a_tree) = make_operator(make_variable((yyvsp[(1) - (3)].a_variable)),'=',(yyvsp[(3) - (3)].a_tree));printf("printtree function\n");printtree ((yyval.a_tree),1);}
     break;
 
   case 3:
 
 /* Line 1455 of yacc.c  */
-#line 17 "hex.y"
-    { exit(0); ;}
+#line 74 "sol.y"
+    {(yyval.a_tree) = make_operator((yyvsp[(1) - (3)].a_tree),'*',(yyvsp[(3) - (3)].a_tree));}
     break;
 
   case 4:
 
 /* Line 1455 of yacc.c  */
-#line 20 "hex.y"
-    {
-                            decimal = (yyvsp[(1) - (1)]);
-                            printf("%d in hexadecimal is %X\n", decimal, decimal);
-                          ;}
+#line 75 "sol.y"
+    {(yyval.a_tree) = make_operator ((yyvsp[(1) - (3)].a_tree), '+', (yyvsp[(3) - (3)].a_tree));}
+    break;
+
+  case 5:
+
+/* Line 1455 of yacc.c  */
+#line 76 "sol.y"
+    {(yyval.a_tree) = make_operator ((yyvsp[(1) - (3)].a_tree), '-', (yyvsp[(3) - (3)].a_tree));}
+    break;
+
+  case 6:
+
+/* Line 1455 of yacc.c  */
+#line 77 "sol.y"
+    {(yyval.a_tree) = (yyvsp[(1) - (1)].a_tree);}
+    break;
+
+  case 7:
+
+/* Line 1455 of yacc.c  */
+#line 80 "sol.y"
+    {(yyval.a_tree) = (yyvsp[(2) - (3)].a_tree);}
+    break;
+
+  case 8:
+
+/* Line 1455 of yacc.c  */
+#line 81 "sol.y"
+    {(yyval.a_tree) = make_variable ((yyvsp[(1) - (1)].a_variable));}
     break;
 
 
 
 /* Line 1455 of yacc.c  */
-#line 1332 "hex.tab.c"
+#line 1430 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1540,14 +1638,12 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 26 "hex.y"
+#line 83 "sol.y"
 
+void yyerror (char *s) {
+	// fprintf (stderr, "%s\n", s);
+	}
+int main (void) {
+	return yyparse();
+	}
 
-void yyerror(const char *msg) {
-    fprintf(stderr, "Error: %s\n", msg);
-}
-
-int main() {
-    yyparse();
-    return 0;
-}

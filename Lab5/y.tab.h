@@ -39,14 +39,33 @@
    /* Put the tokens into the symbol table, so that GDB and other debuggers
       know about them.  */
    enum yytokentype {
-     DIGIT = 258
+     number = 258,
+     variable = 259
    };
 #endif
+/* Tokens.  */
+#define number 258
+#define variable 259
+
 
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+typedef union YYSTYPE
+{
+
+/* Line 1676 of yacc.c  */
+#line 58 "sol.y"
+
+   int a_number;
+   char a_variable;
+   struct tree *a_tree;
+
+
+
+/* Line 1676 of yacc.c  */
+#line 68 "y.tab.h"
+} YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
